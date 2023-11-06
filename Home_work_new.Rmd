@@ -1,0 +1,89 @@
+---
+title: "Home_work_new"
+author: "Papiya Bhattacharya"
+date: "06/11/2023"
+output: html_document
+---
+
+```
+url <- "https://www.dipintothereef.com/uploads/3/7/3/5/37359245/rairuoho.txt"
+```
+
+## Read the data into a data frame
+```
+data <- read.table(url, header = TRUE, sep = "\t") # Assuming tab-separated values
+```
+## library necessory packages
+```
+library (psych)
+library(ggplot2)
+library(dplyr)
+library(gridExtra)
+library(car)
+```
+## Create a subset for "nutrient" treatment
+```
+(nutrient_group1 <- data[data$treatment == "nutrient", ])
+```
+
+## Create a subset for "water" treatment
+```
+(water_group2 <- data[data$treatment == "water", ])
+
+```
+## Extract the “germinate” column from both datasets
+
+```
+(germinate_nutrient <- nutrient_group1$germinate)
+(germinate_water <- water_group2$germinate)
+```
+
+##Create a new dataframe with the extracted columns and specific column names
+```
+(combined_data <- data.frame(
+  germinate_Group1_nutrient = germinate_nutrient,
+  germinate_Group2_water = germinate_water
+))
+```
+
+## Create vectors for germinate values in Group 1 (nutrient) and Group 2 (water)
+
+```
+(germinate_Group1_nutrient <- c(combined_data$germinate_Group1_nutrient))
+(germinate_Group2_water <- c((combined_data$germinate_Group2_water))
+Create an empty vector to store the t-statistics
+t_statistics <- numeric(length(germinate_Group1_nutrient))
+```
+##Calculate the t-statistic for each pair of values
+
+```
+
+for (i in 1:length(germinate_Group1_nutrient)) {
+  mean_Group1 <- mean(germinate_Group1_nutrient[1:i])
+  mean_Group2 <- mean(germinate_Group2_water[1:i])
+  sd_Group1 <- sd(germinate_Group1_nutrient[1:i])
+  sd_Group2 <- sd(germinate_Group2_water[1:i])
+  n_Group1 <- length(germinate_Group1_nutrient[1:i])
+  n_Group2 <- length(germinate_Group2_water[1:i])
+  
+  t_statistic <- (mean_Group1 - mean_Group2) / sqrt((sd_Group1^2 / n_Group1) + (sd_Group2^2 / n_Group2))
+  t_statistics[i] <- t_statistic
+}
+```
+## Calculate degrees of freedom
+
+```
+Calculate the p-value
+(p_value <- 2 * (1 - pt(abs(t_statistic), df)))
+##[1] 0.02065508 ## p_value
+```
+
+## interpretation of the t statistics result
+
+
+```
+The results suggest that there is a statistically significant difference in the germination lengths between the "nutrient" and "water" treatment groups.
+```
+
+
+
